@@ -1,0 +1,25 @@
+[project]
+name = "lesson-2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Aleksandr Veselev", email = "user@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "dlib>=20.0.1",
+    "ipython>=9.17.1",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.11.1",
+    "opencv-python>=4.10,<5",
+    "requests>=2.34.2",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Flat layout: no src/ directory, no python package to build.
+py-modules = []
