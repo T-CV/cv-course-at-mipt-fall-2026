@@ -1,0 +1,27 @@
+[project]
+name = "lesson-5"
+version = "0.1.0"
+description = "Object Detection Lecture"
+readme = "README.md"
+requires-python = "==3.12.9"
+dependencies = [
+    "ipython>=9.10.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.2",
+    "opencv-python>=4.13.0.92",
+    "pandas>=3.0.1",
+    "pip>=26.0.1",
+    "pycocotools>=2.0.11",
+    "scikit-learn>=1.8.0",
+    "timm>=1.0.25",
+    "torch>=2.4.0",
+    "torchvision>=0.18.1",
+    "transformers>=5.3.0",
+    "ultralytics>=8.4.21",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.4",
+]
