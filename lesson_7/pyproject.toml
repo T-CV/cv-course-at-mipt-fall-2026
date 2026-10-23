@@ -1,0 +1,26 @@
+[project]
+name = "lesson-7"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.8.3",
+    "faiss-cpu>=1.15.1",
+    "hnswlib>=0.8.0",
+    "ipykernel>=7.2.0",
+    "ipython>=9.11.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.8",
+    "pillow>=12.1.1",
+    "protobuf>=7.34.0",
+    "qdrant-client>=1.17.1",
+    "scikit-learn>=1.8.0",
+    "sentencepiece>=0.2.1",
+    "timm>=1.0.25",
+    "torch>=2.10.0",
+    "torchvision>=0.25.0",
+    "transformers>=5.3.0",
+    "truststore>=0.10.4",
+]
+
