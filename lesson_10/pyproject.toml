@@ -1,0 +1,18 @@
+[project]
+name = "lesson-10"
+version = "0.1.0"
+description = "Lesson 10"
+readme = "README.md"
+authors = [
+    { name = "Aleksandr Veselev", email = "veselev.aleks@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.15.0",
+    "datasets>=5.1.0",
+    "diffusers>=0.42.1",
+    "jupyter>=1.1.1",
+    "torch>=2.15.0",
+    "torchvision>=0.29.2",
+    "transformers>=5.22.0",
+]
