@@ -54,7 +54,7 @@ def fig_pipeline():
     box(ax, 2.6, 3.3, 2.2, 0.8, "текстовый\nэнкодер", C["txt"])
     box(ax, 0.2, 2.15, 1.8, 0.8, "$t$, guidance", "white")
     box(ax, 2.6, 2.15, 2.2, 0.8, "MLP → вектор $c$", C["cond"])
-    box(ax, 0.2, 1.0, 1.8, 0.8, "шум $z$\n($t=1$)", "white")
+    box(ax, 0.2, 1.0, 1.8, 0.8, "шум $\\epsilon$\n($t=1$)", "white")
     box(ax, 2.6, 1.0, 2.2, 0.8, "патчи → токены", C["img"])
     box(ax, 6.4, 0.8, 2.6, 3.5, "трансформер\n(MM-DiT)\n\nпредсказывает\nскорость $v_\\theta$", C["net"], fs=12, bold=True)
     for y in (3.7, 2.55, 1.4):
@@ -164,21 +164,22 @@ def fig_blocks():
 
 # 5. Число блоков по моделям
 def fig_block_counts():
-    models = ["FLUX.1", "FLUX.2 [dev]", "Qwen-Image v1", "FLUX.3 Klein"]
-    sep = [0, 0, 0, 15]  # по 5 блоков на поток × 3 потока, внимание внутри потока
+    models = ["FLUX.1", "FLUX.2 [dev]", "Qwen-Image v1", "FLUX 3 Klein"]
+    sep = [0, 0, 0, 5]  # глубина 5 блоков; потоков 3 (текст, картинка, референсы), у каждого свои веса
     dbl = [19, 8, 60, 0]
     sgl = [38, 48, 0, 28]
     fig, ax = plt.subplots(figsize=(10, 3.8))
     fig.patch.set_facecolor("white")
     y = np.arange(len(models))[::-1]
-    ax.barh(y, sep, color=C["ref"], label="раздельные (attention внутри потока)")
+    ax.barh(y, sep, color=C["ref"], label="раздельные: 5 блоков в каждом из 3 потоков")
     ax.barh(y, dbl, left=sep, color=C["img"], label="DoubleStream (свои веса, общий attention)")
     ax.barh(y, sgl, left=np.array(sep) + dbl, color="#7F7F7F", label="SingleStream (всё общее)")
     for yi, a, b, c in zip(y, sep, dbl, sgl):
         x = 0
         for v in (a, b, c):
             if v:
-                ax.text(x + v / 2, yi, str(v), ha="center", va="center", color="black" if v != c or c == 0 else "white")
+                label = "5×3" if (v is a and yi == y[-1]) else str(v)
+                ax.text(x + v / 2, yi, label, ha="center", va="center", color="black" if v != c or c == 0 else "white")
             x += v
     ax.set_yticks(y); ax.set_yticklabels(models)
     ax.set_xlabel("число блоков")
@@ -275,10 +276,10 @@ if __name__ == "__main__":
     fig_block_counts(); fig_text_encoder(); fig_rope(); fig_references()
 
 
-# 9. FLUX.3 Klein: две стадии
+# 9. FLUX 3 Klein: две стадии
 def fig_flux3():
     fig, ax = canvas(12, 4.4, (0, 12), (0, 4.4))
-    streams = [("текст", C["txt"], 3.2), ("картинка ($t$)", C["img"], 2.0), ("референсы ($t=0$)", C["ref"], 0.8)]
+    streams = [("текст ($t=0$)", C["txt"], 3.2), ("картинка ($t$)", C["img"], 2.0), ("референсы ($t=0$)", C["ref"], 0.8)]
     for name, col, y in streams:
         box(ax, 0.2, y, 2.0, 0.7, name, col, fs=10)
         arrow(ax, 2.2, y + 0.35, 2.7, y + 0.35)
