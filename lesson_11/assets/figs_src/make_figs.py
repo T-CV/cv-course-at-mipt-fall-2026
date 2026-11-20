@@ -296,3 +296,56 @@ def fig_flux3():
 
 
 fig_flux3()
+
+
+# 10. Qwen-Image-2.1: блочно-каузальная маска attention
+def fig_qwen21_mask():
+    # последовательность в трансформере для промпта с двумя референсами
+    segs = [("<image1>", "txt", 1), ("реф. 1", "ref", 3), ("<image2>", "txt", 1), ("реф. 2", "ref2", 3),
+            ("инструкция", "txt", 3), ("генерируемая картинка (шум)", "img", 4)]
+    col = {**C, "ref2": "#C5E0B4"}
+    kinds, block = [], []
+    for b, (_, kind, n) in enumerate(segs):
+        kinds += [kind] * n
+        block += [b if kind != "txt" else -1] * n
+    N = len(kinds)
+    idx = np.arange(N)
+    block = np.array(block)
+    mask = (idx[:, None] >= idx[None, :]) | ((block[:, None] == block[None, :]) & (block[:, None] >= 0))
+
+    fig, ax = plt.subplots(figsize=(13, 8.2))
+    fig.patch.set_facecolor("white")
+    for i in range(N):
+        for j in range(N):
+            fc = col[kinds[j]] if mask[i, j] else "white"
+            ax.add_patch(plt.Rectangle((j, N - 1 - i), 1, 1, fc=fc, ec="#D0D0D0", lw=0.8))
+    pos = 0
+    for name, kind, n in segs:
+        ax.add_patch(plt.Rectangle((pos, N + 0.15), n, 0.45, fc=col[kind], ec=C["edge"], lw=0.8))
+        ax.text(pos + n / 2, N + 0.8, name.replace(" (", "\n("), ha="left", va="bottom", fontsize=9,
+                rotation=35, rotation_mode="anchor")
+        ax.add_patch(plt.Rectangle((-0.6, N - pos - n), 0.45, n, fc=col[kind], ec=C["edge"], lw=0.8))
+        ax.text(-0.8, N - pos - n / 2, name, ha="right", va="center", fontsize=9)
+        pos += n
+        ax.plot([pos, pos], [0, N], color=C["edge"], lw=1.2)
+        ax.plot([0, N], [N - pos, N - pos], color=C["edge"], lw=1.2)
+    ax.set_xlim(-6.2, N + 8.0)
+    ax.set_ylim(-1.0, N + 4.0)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title("Qwen-Image-2.1: блочно-каузальный attention\n"
+                 "закрашено — можно смотреть; белое — нельзя", fontsize=12)
+    ax.text(N / 2, -0.3, "на кого смотрят (key)", ha="center", va="top", fontsize=10)
+    ax.text(-5.6, N / 2, "кто смотрит (query)", ha="center", va="center", rotation=90, fontsize=10)
+    y = lambda i: N - 1 - i + 0.5  # центр строки i
+    notes = [((6.5, y(2)), (N + 0.8, y(2)), "реф. 1 не видит реф. 2:\nтот стоит позже"),
+             ((6.5, y(9)), (N + 0.8, y(6.5)), "инструкция видит оба референса —\nпоэтому может ссылаться на <image2>"),
+             ((13.0, y(9)), (N + 0.8, y(9.3)), "текст и референсы не видят\nгенерируемую картинку"),
+             ((13.0, y(13)), (N + 0.8, y(13)), "картинка видит всё,\nвнутри себя — в обе стороны")]
+    for xy, xytext, text in notes:
+        ax.annotate(text, xy=xy, xytext=xytext, fontsize=10, ha="left", va="center",
+                    arrowprops=dict(arrowstyle="-|>", color=C["edge"], lw=1.0))
+    save(fig, "p_qwen21_mask.png")
+
+
+fig_qwen21_mask()
